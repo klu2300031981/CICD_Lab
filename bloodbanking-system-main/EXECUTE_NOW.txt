@@ -1,0 +1,68 @@
+================================================================================
+  BLOOD BANKING SYSTEM - EXECUTE PROJECT AND SEE OUTPUT
+================================================================================
+
+QUICK START (Choose one method):
+
+METHOD 1: AUTOMATED (RECOMMENDED)
+----------------------------------
+1. Open PowerShell in this directory
+2. Run: .\EXECUTE_PROJECT.ps1
+3. Follow the prompts
+4. Access at: http://localhost:3000 (after port-forward)
+
+METHOD 2: QUICK START
+----------------------------------
+1. Open PowerShell in this directory
+2. Run: .\quick-start.ps1
+3. Access at: http://localhost:3000 (after port-forward)
+
+METHOD 3: MANUAL STEP-BY-STEP
+----------------------------------
+1. Build images:
+   docker build -t bloodbank-backend:1.0.0 ./backend
+   docker build -t bloodbank-frontend:1.0.0 --build-arg VITE_API_URL=/api ./frontend
+
+2. Install ingress:
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+3. Deploy:
+   kubectl create namespace bloodbank
+   helm install bloodbank .\helm\bloodbank --namespace bloodbank --set backend.image.repository=bloodbank-backend --set backend.image.tag=1.0.0 --set frontend.image.repository=bloodbank-frontend --set frontend.image.tag=1.0.0 --set backend.env.spring.datasource.password=changeme --set backend.env.spring.mail.username=test@test.com --set backend.env.spring.mail.password=test --set ingress.enabled=false
+
+4. Access application:
+   kubectl port-forward -n bloodbank svc/bloodbank-frontend 3000:80
+   kubectl port-forward -n bloodbank svc/bloodbank-backend 8080:8080
+
+VIEW OUTPUT:
+----------------------------------
+Check pods:        kubectl get pods -n bloodbank
+Check services:    kubectl get svc -n bloodbank
+Check HPA:         kubectl get hpa -n bloodbank
+View logs:         kubectl logs -f deployment/bloodbank-backend -n bloodbank
+View all:          kubectl get all -n bloodbank
+
+EXPECTED OUTPUT:
+----------------------------------
+Pods:              3 pods running (backend, frontend, mysql)
+Services:          3 services (backend:8080, frontend:80, mysql:3306)
+HPA:               2 HPA active (backend: 2-10 replicas, frontend: 2-10 replicas)
+Application:       http://localhost:3000 (after port-forward)
+
+TROUBLESHOOTING:
+----------------------------------
+Docker not running?    Start Docker Desktop
+Kubernetes not available?  Enable Kubernetes in Docker Desktop (Settings > Kubernetes)
+Pods not starting?     kubectl logs <pod-name> -n bloodbank
+Images not found?      Rebuild images or check docker images
+
+CLEANUP:
+----------------------------------
+Remove deployment:     helm uninstall bloodbank -n bloodbank
+Delete namespace:      kubectl delete namespace bloodbank
+
+================================================================================
+  READY TO EXECUTE? Run: .\EXECUTE_PROJECT.ps1
+================================================================================
+
+

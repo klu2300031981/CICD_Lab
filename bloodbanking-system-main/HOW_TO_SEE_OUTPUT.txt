@@ -1,0 +1,113 @@
+================================================================================
+  HOW TO SEE YOUR OUTPUT - QUICK GUIDE
+================================================================================
+
+OPTION 1: SEE EXPECTED OUTPUT (WORKS NOW)
+------------------------------------------
+Run this command:
+  .\SHOW_OUTPUT.ps1
+
+This shows you:
+  ✅ Current system status
+  ✅ Expected deployment output (what you'll see)
+  ✅ Commands to view real output
+  ✅ How to see real output after setup
+
+OPTION 2: SEE REAL OUTPUT (AFTER SETUP)
+----------------------------------------
+Step 1: Complete Setup
+  1. Install Helm: choco install kubernetes-helm
+  2. Enable Kubernetes in Docker Desktop
+     - Open Docker Desktop
+     - Settings > Kubernetes > Enable Kubernetes
+     - Click "Apply & Restart"
+  3. Wait 1-2 minutes for Kubernetes to start
+
+Step 2: Deploy
+  .\EXECUTE_PROJECT.ps1
+
+Step 3: View Output
+  kubectl get all -n bloodbank
+  kubectl get pods -n bloodbank
+  kubectl get svc -n bloodbank
+  kubectl get hpa -n bloodbank
+
+Step 4: Access Application (IMPORTANT!)
+  ⚠️  Links will NOT work until port-forward is set up!
+  
+  Open 2 separate PowerShell terminals:
+  
+  Terminal 1 (Frontend):
+    kubectl port-forward -n bloodbank svc/bloodbank-frontend 3000:80
+  
+  Terminal 2 (Backend):
+    kubectl port-forward -n bloodbank svc/bloodbank-backend 8080:8080
+  
+  Then access:
+    - Frontend: http://localhost:3000
+    - Backend: http://localhost:8080
+  
+  NOTE: Keep both terminals running!
+
+WHAT OUTPUT YOU'LL SEE
+----------------------
+After deployment, you'll see:
+
+✅ 5 Pods Running:
+   - 2x bloodbank-backend
+   - 2x bloodbank-frontend
+   - 1x bloodbank-mysql
+
+✅ 3 Services:
+   - Backend (port 8080)
+   - Frontend (port 80)
+   - MySQL (port 3306)
+
+✅ 2 HPA (Auto-Scaling):
+   - Backend HPA (2-10 replicas)
+   - Frontend HPA (2-10 replicas)
+
+✅ Application Access (AFTER PORT-FORWARD SETUP):
+   Step 1: Open Terminal 1 and run:
+     kubectl port-forward -n bloodbank svc/bloodbank-frontend 3000:80
+   
+   Step 2: Open Terminal 2 and run:
+     kubectl port-forward -n bloodbank svc/bloodbank-backend 8080:8080
+   
+   Step 3: Then access:
+     - Frontend: http://localhost:3000
+     - Backend: http://localhost:8080
+     - Health Check: http://localhost:8080/actuator/health
+   
+   NOTE: These links ONLY work after:
+     1. Deployment is complete
+     2. Port-forward commands are running
+     3. Services are ready
+
+QUICK COMMANDS TO VIEW OUTPUT
+------------------------------
+View all:        kubectl get all -n bloodbank
+View pods:       kubectl get pods -n bloodbank
+View services:   kubectl get svc -n bloodbank
+View HPA:        kubectl get hpa -n bloodbank
+View logs:       kubectl logs -f deployment/bloodbank-backend -n bloodbank
+Watch changes:   kubectl get pods -n bloodbank -w
+
+FILES TO CHECK
+--------------
+- SHOW_OUTPUT.ps1       (Run this to see expected output)
+- VIEW_OUTPUT.md        (Detailed guide)
+- EXPECTED_OUTPUT.md    (Detailed output examples)
+- SETUP_GUIDE.md        (Setup instructions)
+
+NEXT STEPS
+----------
+1. Run: .\SHOW_OUTPUT.ps1 (to see expected output now)
+2. Complete setup (install Helm, enable Kubernetes)
+3. Run: .\EXECUTE_PROJECT.ps1 (to deploy)
+4. Use commands above to view real output
+
+================================================================================
+  QUICK START: Run .\SHOW_OUTPUT.ps1 now to see expected output!
+================================================================================
+
